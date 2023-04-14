@@ -84,6 +84,8 @@ def main():
     parser.add_argument("--timeout", help="Set the read timeout for network operations. (in seconds)",
                         type=float, default=30., action="store")
     parser.add_argument("--version", action="version", version="%(prog)s {}".format(__version__))
+    parser.add_argument("--replyto", metavar="rid", help="reply to message id",
+                        nargs="+", type=int)
     args = parser.parse_args()
 
     if args.global_config:
@@ -118,6 +120,10 @@ def main():
             sys.exit(0)
         args.message = [message]
 
+    replyto=0
+    if args.replyto:
+        replyto=args.replyto[0]
+
     try:
         delete(args.delete, conf=conf[0])
         message_ids = []
@@ -137,7 +143,8 @@ def main():
                 audios=args.audio,
                 captions=args.caption,
                 locations=args.location,
-                timeout=args.timeout
+                timeout=args.timeout,
+                replyto=replyto
             )
         if args.showids and message_ids:
             smessage_ids = [str(m) for m in message_ids]
@@ -162,7 +169,7 @@ def main():
 def send(*,
          messages=None, files=None, images=None, stickers=None, animations=None, videos=None, audios=None,
          captions=None, locations=None, conf=None, parse_mode=None, pre=False, silent=False,
-         disable_web_page_preview=False, timeout=30):
+         disable_web_page_preview=False, timeout=30, replyto=0):
     """Send data over Telegram. All arguments are optional.
 
     Always use this function with explicit keyword arguments. So
@@ -219,6 +226,9 @@ def send(*,
         "disable_notification": silent,
         "timeout": timeout,
     }
+
+    if replyto != 0:
+        kwargs["reply_to_message_id"] = replyto
 
     if messages:
         def send_message(message, parse_mode):
