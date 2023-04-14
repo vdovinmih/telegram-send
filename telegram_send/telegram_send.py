@@ -415,16 +415,16 @@ def configure(conf, channel=False, group=False, fm_integration=False):
                       .format(markup(bot_name, "cyan")))
         print(markup("\nCongratulations! telegram-send can now post to your channel!", "green"))
     else:
-        password = "".join([str(randint(0, 9)) for _ in range(5)])
+        activation_phrase = "".join([str(randint(0, 9)) for _ in range(5)])
         bot_url = contact_url + bot_name
         fancy_bot_name = markup(bot_name, "cyan")
         if group:
-            password = "/{}@{}".format(password, bot_name)
+            activation_phrase = "/{}@{}".format(activation_phrase, bot_name)
             print("Please add {} to your group\nand send the following message to the group: {}\n"
-                  .format(fancy_bot_name, markup(password, "bold")))
+                  .format(fancy_bot_name, markup(activation_phrase, "bold")))
         else:
-            print("Please add {} on Telegram ({})\nand send it the password: {}\n"
-                  .format(fancy_bot_name, bot_url, markup(password, "bold")))
+            print("Please add {} on Telegram ({})\nand send it the following message: {}\n"
+                  .format(fancy_bot_name, bot_url, markup(activation_phrase, "bold")))
 
         update, update_id = None, None
 
@@ -432,7 +432,7 @@ def configure(conf, channel=False, group=False, fm_integration=False):
             updates = bot.get_updates(offset=update_id, timeout=10)
             for update in updates:
                 if update.message:
-                    if update.message.text == password:
+                    if update.message.text == activation_phrase:
                         return update, None
             if len(updates) > 0:
                 return None, updates[-1].update_id + 1
