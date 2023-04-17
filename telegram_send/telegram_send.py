@@ -30,7 +30,8 @@ from warnings import warn
 
 import colorama
 import telegram
-from telegram.constants import MAX_MESSAGE_LENGTH
+from telegram.constants import MessageLimit
+MAX_MESSAGE_LENGTH = MessageLimit.MAX_TEXT_LENGTH
 
 from .version import __version__
 from .utils import pre_format, split_message, get_config_path, markup
