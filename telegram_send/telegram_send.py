@@ -225,7 +225,7 @@ def send(*,
     kwargs = {
         "chat_id": chat_id,
         "disable_notification": silent,
-        "timeout": timeout,
+#        "timeout": timeout,
     }
 
     if replyto != 0:
@@ -254,7 +254,9 @@ def send(*,
             elif len(m) == 0:
                 continue
             else:
-                message_ids += [send_message(m, parse_mode)["message_id"]]
+                msg = asyncio.run(send_message(m, parse_mode))
+                print(msg)
+                message_ids += [msg["message_id"]]
 
     def make_captions(items, captions):
         # make captions equal length when not all images/files have captions
